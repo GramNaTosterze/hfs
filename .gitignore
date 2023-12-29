@@ -1,0 +1,5 @@
+build
+
+# ignore unised files from original xcode project
+*.xcodeproj
+*.xcconfig

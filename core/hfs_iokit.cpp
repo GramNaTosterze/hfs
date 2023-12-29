@@ -253,7 +253,7 @@ kern_return_t hfs_get_platform_serial_number(char *serial_number_str,
 }
 
 // Interface with AKS
-
+/*
 static aks_file_system_key_services_t *
 key_services(void)
 {
@@ -308,3 +308,4 @@ int hfs_backup_key(aks_cred_t access, const aks_wrapped_key_t wrapped_key_in,
 		return ENXIO;
 	return ks->backup_key(access, wrapped_key_in, wrapped_key_out);
 }
+*/
