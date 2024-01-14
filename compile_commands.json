@@ -1,0 +1,24 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-std=gnu99",
+      "-ffreestanding",
+      "-Wall",
+      "-Wextra",
+      "-IApplications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include",
+      "-I.",
+      "-I./tests/",
+      "-DFS_BUNDLE_BIN_PATH=\"/System/Library/Filesystems/hfs.fs/Contents/Resources\"",
+      "-DNS_BLOCK_ASSERTIONS=1",
+      "-DOBJC_OLD_DISPATCH_PROTOTYPES=0",
+      "-o",
+      "build/./tests/cases/test-log2phys.m.o",
+      "tests/cases/test-log2phys.m"
+    ],
+    "directory": "/Users/krzysiu/HFSUtils/hfs",
+    "file": "/Users/krzysiu/HFSUtils/hfs/tests/cases/test-log2phys.m",
+    "output": "/Users/krzysiu/HFSUtils/hfs/build/tests/cases/test-log2phys.m.o"
+  }
+]

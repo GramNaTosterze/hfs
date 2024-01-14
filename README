@@ -1,3 +1,11 @@
+Most targets currently require macosx.internal sdk so they won't compile even on mac os. 
+# Known issues - macos
+some frameworks are only vaulable on internal sdk. this includes:
+- some parts of System/{sys, uuid}
+- AppleKeyStore.framework
+- DiskImages2.framework
+
+## Old Readme
 
 -- How to build the HFS Kexts --
 
