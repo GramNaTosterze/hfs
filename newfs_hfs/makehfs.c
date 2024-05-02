@@ -35,9 +35,15 @@
 #include <err.h>
 #include <sys/errno.h>
 #include <sys/stat.h>
+
+#if defined(__linux__)
+#include <time.h>
+#include "os_byte_order.h"
+#include "apple_types.h"
+#elif defined(__APPLE__)
 #include <sys/sysctl.h>
 #include <sys/vmmeter.h>
-
+#endif
 #include <err.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -47,6 +53,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#if defined(__APPLE__)
 #include <wipefs.h>
 
 #include <TargetConditionals.h>
@@ -99,6 +106,10 @@ enum {
 
 extern Boolean _CFStringGetFileSystemRepresentation(CFStringRef string, UInt8 *buffer, CFIndex maxBufLen);
 
+#else
+#define COMMON_DIGEST_FOR_OPENSSL
+#include <openssl/sha.h>
+#endif
 
 #include <hfs/hfs_format.h>
 #include <hfs/hfs_mount.h>
@@ -322,6 +333,7 @@ createExtents(HFSPlusForkData *file,
 	return;
 }
 
+#if defined(__APPLE__)
 /*
  * wipefs() in -lutil knows about multiple filesystem formats.
  * This replaces the code:
@@ -343,7 +355,7 @@ dowipefs(int fd)
 	wipefs_free(&handle);
 	return err;
 }
-
+#endif
 
 /*
  * make_hfsplus
@@ -368,13 +380,14 @@ make_hfsplus(const DriveInfo *driveInfo, hfsparams_t *defaults)
 	HFSPlusVolumeHeader	*header = NULL;
 	UInt64			sector;
 
+#if defined(__APPLE__)
 	/* Use wipefs() API to clear old metadata from the device.
 	 * This should be done before we start writing anything on the 
 	 * device as wipefs will internally call ioctl(DKIOCDISCARD) on the 
 	 * entire device.
 	 */
 	(void) dowipefs(driveInfo->fd);
-
+#endif
 	/* --- Create an HFS Plus header:  */
 
 	header = (HFSPlusVolumeHeader*)malloc((size_t)kBytesPerSector);
@@ -1164,8 +1177,12 @@ WriteExtentsFile(const DriveInfo *driveInfo, UInt64 startingSector,
 		};
 
 		if (numOverflowExtents > 1) {
+#if defined(__APPLE__)
 			qsort_b(overflowExtents, numOverflowExtents, sizeof(*overflowExtents), keyCompare);
-		}
+#else
+            qsort(overflowExtents, numOverflowExtents, sizeof(*overflowExtents), (__compar_fn_t) keyCompare);
+#endif
+        }
 		bzero(node2, nodeSize);
 		ndp = (BTNodeDescriptor*)node2;
 		ndp->kind = kBTLeafNode;
@@ -1371,7 +1388,7 @@ WriteAttributesFile(const DriveInfo *driveInfo, UInt64 startingSector,
 	WriteBuffer(driveInfo, startingSector, *bytesUsed, buffer);
 }
 
-#if !TARGET_OS_IPHONE
+#if !TARGET_OS_IPHONE && defined(__APPLE__)
 static int
 get_dev_uuid(const char *disk_name, char *dev_uuid_str, int dev_uuid_len)
 {
@@ -1623,8 +1640,10 @@ InitCatalogRoot_HFSPlus(const hfsparams_t *dp, const HFSPlusVolumeHeader *header
 	SInt16					offset;
 	size_t					unicodeBytes;
 	UInt8 canonicalName[kHFSPlusMaxFileNameBytes];	// UTF8 character may convert to three bytes, plus a NUL
-	CFStringRef cfstr;
+#if defined(__APPLE__)
+    CFStringRef cfstr;
 	Boolean	cfOK;
+#endif
 	int index = 0;
 
 	nodeSize = dp->catalogNodeSize;
@@ -1644,8 +1663,11 @@ InitCatalogRoot_HFSPlus(const hfsparams_t *dp, const HFSPlusVolumeHeader *header
 	 * First record is always the root directory...
 	 */
 	ckp = (HFSPlusCatalogKey *)((UInt8 *)buffer + offset);
-	
-	/* Use CFString functions to get a HFSPlus Canonical name */
+
+#if defined(__linux__)
+    ConvertUTF8toUnicode(dp->volumeName, sizeof(ckp->nodeName.unicode), ckp->nodeName.unicode, &ckp->nodeName.length);
+#elif defined(__APPLE__)
+    /* Use CFString functions to get a HFSPlus Canonical name */
 	cfstr = CFStringCreateWithCString(kCFAllocatorDefault, (char *)dp->volumeName, kCFStringEncodingUTF8);
 	cfOK = _CFStringGetFileSystemRepresentation(cfstr, canonicalName, sizeof(canonicalName));
 
@@ -1661,6 +1683,7 @@ InitCatalogRoot_HFSPlus(const hfsparams_t *dp, const HFSPlusVolumeHeader *header
 		      dp->volumeName, kDefaultVolumeNameStr);
 	}
 	CFRelease(cfstr);
+#endif
 	ckp->nodeName.length = SWAP_BE16 (ckp->nodeName.length);
 
 	unicodeBytes = sizeof(UniChar) * SWAP_BE16 (ckp->nodeName.length);

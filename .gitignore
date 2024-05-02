@@ -1,4 +1,6 @@
 build
+bin
+cmake-build-debug
 
 # ignore unised files from original xcode project
 *.xcodeproj

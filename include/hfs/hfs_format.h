@@ -782,7 +782,9 @@ enum {
 }
 #endif
 
+#if defined(__APPLE__)
 #include <uuid/uuid.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {

@@ -30,10 +30,15 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#if defined(__linux__)
+#include "os_byte_order.h"
+#elif defined(__APPLE__)
 #include <libkern/OSByteOrder.h>
-#include <hfs/hfs_format.h>
+#else
+#error "OS NOT SUPPORTED"
+#endif
 
+#include <hfs/hfs_format.h>
 #include "hfs_endian.h"
 
 #undef ENDIAN_DEBUG

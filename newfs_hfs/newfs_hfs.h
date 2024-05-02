@@ -20,9 +20,11 @@
  * 
  * @APPLE_LICENSE_HEADER_END@
  */
- 
+#if defined(__linux__)
+#include "apple_types.h"
+#elif defined(__APPLE__)
 #include <CoreFoundation/CFBase.h>
-
+#endif
 enum {
 	kMinHFSPlusVolumeSize	= (512 * 1024),
 	
@@ -48,6 +50,11 @@ enum {
 	kMaxWrapperSize		= 1024 * 1024 * 32,
 	/* Maximum volume that can be wrapped is 256GB */
 	kMaxWrapableSectors	= (kMaxWrapperSize/8) * (65536/512)
+#if defined(__linux__)
+    ,kIsInvisible	= 0x4000,	/* Files and folders */
+    kNameLocked	= 0x1000,	/* Files and folders */
+    kTextEncodingMacUnicode = 0x7E
+#endif
 };
 
 /* B-tree key descriptor */

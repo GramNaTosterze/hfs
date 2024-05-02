@@ -1,11 +1,34 @@
-Most targets currently require macosx.internal sdk so they won't compile even on mac os. 
-# Known issues - macos
-some frameworks are only vaulable on internal sdk. this includes:
-- some parts of System/{sys, uuid}
-- AppleKeyStore.framework
-- DiskImages2.framework
+# HFSUtils [WIP]
+tools to handle hfs partitions
 
-## Old Readme
+## Ported tools
+1. newfs_hfs
+
+## Dependencies
+### MacOS
+1. [XNU headers]
+
+### Debian
+1. libbsd-dev
+
+### ArchLinux
+
+
+## Compilation
+```console
+	$ mkdir build
+	$ cd build
+	$ cmake ..
+	$ make [newfs_hfs]
+```
+
+## Usage
+TODO
+
+
+[XNU headers]: https://github.com/apple-oss-distributions/xnu
+
+# Original Readme
 
 -- How to build the HFS Kexts --
 

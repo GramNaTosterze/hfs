@@ -30,7 +30,14 @@
  * volume format.
  */
 #include <hfs/hfs_format.h>
+#if defined(__linux__)
+#include <endian.h>
+#include <byteswap.h>
+#elif defined(__APPLE__)
 #include <libkern/OSByteOrder.h>
+#else
+#error "OS NOT SUPORTED"
+#endif
 
 /*********************/
 /* BIG ENDIAN Macros */
