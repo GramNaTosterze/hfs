@@ -1,6 +1,9 @@
-build
-bin
-cmake-build-debug
+.cashe/
+.idea/
+build/
+bin/
+cmake-build-debug/
+lib/
 
 # ignore unised files from original xcode project
 *.xcodeproj
