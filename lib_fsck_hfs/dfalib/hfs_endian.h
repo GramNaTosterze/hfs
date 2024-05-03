@@ -30,7 +30,9 @@
  * volume format.
  */
 #include <hfs/hfs_format.h>
+#if defined(__APPLE__)
 #include <libkern/OSByteOrder.h>
+#endif
 #include "SRuntime.h"
 
 /*********************/

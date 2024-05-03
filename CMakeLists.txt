@@ -9,9 +9,10 @@ add_compile_options(-fblocks)
 
 add_subdirectory(newfs_hfs)
 add_subdirectory(lib_fsck_hfs)
+add_subdirectory(fsck_hfs)
 
-set_target_properties( newfs_hfs libfsck dfalib
+set_target_properties( newfs_hfs fsck_hfs dfa
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin
-        LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib
+        ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib
 )

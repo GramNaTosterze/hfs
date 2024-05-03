@@ -49,7 +49,12 @@
 #define DEBUG_JOURNAL 0
 
 #include <hfs/hfs_format.h>
+#if __linux__
+#include "os_byte_order.h"
+#include "apple_types.h"
+#else /*__APPLE__*/
 #include <libkern/OSByteOrder.h>
+#endif
 
 typedef struct SwapType {
 	const char *name;

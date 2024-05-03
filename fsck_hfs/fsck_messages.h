@@ -25,7 +25,9 @@
 #define _FSCK_MESSAGES_H
 
 #include <stdio.h>
-
+#if __linux__
+#include "apple_types.h"
+#endif
 /*
  * Internal structure for each fsck message.  This is the same 
  * structure in which the message number, message string and 

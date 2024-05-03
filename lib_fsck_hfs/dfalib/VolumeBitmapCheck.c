@@ -31,7 +31,9 @@
 
 #include "Scavenger.h"
 
+#if __APPLE__
 #include <sys/disk.h>
+#endif
 
 #include <bitstring.h>
 
@@ -1077,17 +1079,22 @@ int AllocateContigBitmapBits (SVCB *vcb, UInt32 numBlocks, UInt32 *actualStartBl
 }
 
 enum { kMaxTrimExtents = 256 };
+#if __APPLE__
 dk_extent_t gTrimExtents[kMaxTrimExtents];
 dk_unmap_t gTrimData;
+#endif
 
 static void TrimInit(void)
 {
+#if __APPLE__
 	bzero(&gTrimData, sizeof(gTrimData));
 	gTrimData.extents = gTrimExtents;
+#endif
 }
 
 static void TrimFlush(void)
 {
+#if __APPLE__
 	int err;
 	
 	if (gTrimData.extentsCount == 0)
@@ -1103,10 +1110,12 @@ static void TrimFlush(void)
         fsck_debug_print(ctx, d_error|d_trim, "TrimFlush: error %d\n", errno);
 	}
 	gTrimData.extentsCount = 0;
+#endif
 }
 
 static void TrimExtent(SGlobPtr g, UInt32 startBlock, UInt32 blockCount)
 {
+#if __APPLE__
 	UInt64 offset;
 	UInt64 length;
 	
@@ -1123,6 +1132,7 @@ static void TrimExtent(SGlobPtr g, UInt32 startBlock, UInt32 blockCount)
 	gTrimExtents[gTrimData.extentsCount].length = length;
 	if (++gTrimData.extentsCount == kMaxTrimExtents)
 		TrimFlush();
+#endif
 }
 
 /* Function: TrimFreeBlocks
@@ -1137,6 +1147,7 @@ static void TrimExtent(SGlobPtr g, UInt32 startBlock, UInt32 blockCount)
  */
 void TrimFreeBlocks(SGlobPtr g)
 {
+#if __APPLE__
 	UInt32 *buffer;
 	UInt32 bit;
 	UInt32 wordWithinSegment;
@@ -1234,6 +1245,7 @@ void TrimFreeBlocks(SGlobPtr g)
 	
 	TrimFlush();
     fsck_debug_print(ctx, d_info|d_trim, "Trimmed %u allocation blocks.\n", totalTrimmed);
+#endif
 }
 
 /* Function: IsTrimSupported
@@ -1247,6 +1259,9 @@ void TrimFreeBlocks(SGlobPtr g)
  */
 int IsTrimSupported(void)
 {
+#if __linux__
+    return false;
+#else /* __APPLE__ */
 	int err;
     uint32_t features = 0;
 	
@@ -1259,6 +1274,7 @@ int IsTrimSupported(void)
 	}
 	
 	return features & DK_FEATURE_UNMAP;
+#endif
 }
 
 /*

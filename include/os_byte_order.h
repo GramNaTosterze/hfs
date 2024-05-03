@@ -1,6 +1,10 @@
 #ifndef __OS_BYTE_ORDER_H__
 #define __OS_BYTE_ORDER_H__
 
+#include <byteswap.h>
+
+#define XATTR_MAXNAMELEN 127
+
 #define OSSwapHostLongToBig(x)		cpu_to_be64(x)
 #define OSSwapBigShortToHost(x) 	be16_to_cpu(x)
 #define OSSwapBigToHostInt16(x)		be16_to_cpu(x)
@@ -9,6 +13,9 @@
 #define OSSwapBigLongLongToHost(x) 	be64_to_cpu(x)
 #define OSSwapBigToHostInt64(x)		be64_to_cpu(x)
 #define OSSwapHostToBigInt32(x)		cpu_to_be32(x)
+#define OSSwapInt16(x)              be16_to_cpu(x)
+#define OSSwapInt32(x)              be32_to_cpu(x)
+#define OSSwapInt64(x)              be64_to_cpu(x)
 
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 /* Big Endian Swaps */

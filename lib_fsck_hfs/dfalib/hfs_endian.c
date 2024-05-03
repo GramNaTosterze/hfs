@@ -32,7 +32,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#if defined(__linux__)
+#include "os_byte_order.h"
+#include "apple_types.h"
+#elif defined(__APPLE__)
 #include <libkern/OSByteOrder.h>
+#endif
 #include <hfs/hfs_format.h>
 
 #include "Scavenger.h"

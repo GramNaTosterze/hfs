@@ -1,12 +1,16 @@
 #include <fcntl.h>
+#if __APPLE__
 #include <util.h>
+#endif
 #include <unistd.h>
 #include <string.h>
 #include <sys/mount.h>
 #include <uuid/uuid.h>
+#if __APPLE__
 #include <IOKit/IOBSD.h>
 #include <IOKit/IOKitLib.h>
 #include <IOKit/storage/IOMedia.h>
+#endif
 
 #include "check.h"
 
@@ -23,6 +27,9 @@
 int
 OpenDeviceByUUID(void *uuidp, char **namep)
 {
+#if __linux__
+    return 0; //TODO
+#else /*__APPLE__*/
     char devname[ MAXPATHLEN ];
     CFStringRef devname_string;
     int fd = -1;
@@ -61,4 +68,5 @@ OpenDeviceByUUID(void *uuidp, char **namep)
     }
 
     return fd;
+#endif
 }

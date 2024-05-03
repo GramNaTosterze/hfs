@@ -7,8 +7,21 @@
 #include "check.h"
 #include "fsck_msgnums.h"
 #include "dfalib/CheckHFS.h"
+#if __linux__
+#include <sys/vfs.h>
+#include <bsd/sys/param.h>
+#include <unistd.h>
+#endif
 
 #include <hfs/hfs_mount.h>
+
+#if __linux__
+#define MNT_RDONLY MS_RDONLY
+#define SIGINFO 29 // discard signal
+#endif
+
+fsck_state_t state;
+lib_fsck_ctx_t ctx;
 
 static int setup (char *dev);
 static int ScanDisk(int fd);
@@ -178,11 +191,17 @@ int checkfilesys(char * filesys)
         }
         if (flags & MNT_RDONLY) {
             bzero(&args, sizeof(args));
+#if __APPLE__
             flags |= MNT_UPDATE | MNT_RELOAD;
+#endif
             if (state.debug) {
                 fsck_print(ctx, LOG_TYPE_STDERR, "doing update / reload mount for %s now\n", mntonname);
             }
+#if __linux__
+            if (mount("none", mntonname, "hfs", flags, &args) == 0) {
+#else /*__APPLE__*/
             if (mount("hfs", mntonname, flags, &args) == 0) {
+#endif
                 if (result != 0) {
                     result = EEXIT;
                 }
@@ -322,7 +341,9 @@ setup(char *dev)
         uint64_t memSize;
         size_t dsize = sizeof(memSize);
         int rv;
-
+#if __linux__
+#define kMaxSafeModeMem    ((size_t)2 * 1024 * 1024 * 1024)    /* 2Gbytes, means cache will max out at 1gbyte */
+#else /*__APPLE__*/
         rv = sysctlbyname("hw.memsize", &memSize, &dsize, NULL, 0);
         if (rv == -1) {
             fsck_print(ctx, LOG_TYPE_STDERR, "sysctlbyname failed, not auto-setting cache size\n");
@@ -342,6 +363,7 @@ setup(char *dev)
             }
             state.reqCacheSize = memSize / d;
         }
+#endif
     }
     
     CalculateCacheSizes(state.reqCacheSize, &cacheBlockSize, &cacheTotalBlocks, state.debug);
@@ -536,6 +558,7 @@ siginfo(int signo)
 void
 start_progress(void)
 {
+#if __APPLE__
     int rv;
     int enable = 1;
     if (state.hotroot == 0) {
@@ -545,11 +568,13 @@ start_progress(void)
     if (state.debug && rv == -1 && errno != ENOENT) {
         fsck_print(ctx, LOG_TYPE_WARN, "sysctl(%s) failed", kProgressToggle);
     }
+#endif
 }
 
 void
 draw_progress(int pct)
 {
+#if __APPLE__
     int rv;
     if (state.hotroot == 0) {
         return;
@@ -558,11 +583,13 @@ draw_progress(int pct)
     if (state.debug && rv == -1 && errno != ENOENT) {
         fsck_print(ctx, LOG_TYPE_WARN, "sysctl(%s) failed", kProgress);
     }
+#endif
 }
 
 void
 end_progress(void)
 {
+#if __APPLE__
     int rv;
     int enable = 0;
     if (state.hotroot == 0) {
@@ -572,6 +599,7 @@ end_progress(void)
     if (state.debug && rv == -1 && errno != ENOENT) {
         fsck_print(ctx, LOG_TYPE_WARN, "sysctl(%s) failed", kProgressToggle);
     }
+#endif
 }
 
 /*

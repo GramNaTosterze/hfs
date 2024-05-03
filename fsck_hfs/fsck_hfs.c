@@ -23,10 +23,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/param.h>
+#if __APPLE__
 #include <sys/ucred.h>
+#endif
 #include <sys/ioctl.h>
+#if __APPLE__
 #include <sys/disk.h>
 #include <sys/sysctl.h>
+#endif
 #include <err.h>
 #include <setjmp.h>
 
@@ -41,10 +45,22 @@
 #include <ctype.h>
 #include <signal.h>
 
+#if __linux__
+#include <mntent.h>
+#include <sys/vfs.h>
+#include "sys/disk.h"
+#include <bsd/string.h>
+#else
 #include <TargetConditionals.h>
+#endif
 
 #include "fsck_hfs.h"
 #include "fsck_messages.h"
+
+#if __linux__
+#define MNT_RDONLY MS_RDONLY
+#define O_EXLOCK 0
+#endif
 
 static void usage __P((void));
 static char*    check_path(char *name);
@@ -696,13 +712,26 @@ get_mount_point(const char *cdev)
         return NULL;
     }
 
+#if __linux__
+    FILE *fp = fopen("/proc/self/mounts", "r");
+	struct mntent *mntent;
+#endif
+
+
     unraw = strdup(cdev);
     unrawname(unraw);
 
     if (unraw == NULL) {
         goto done;
     }
-
+#if __linux__
+    while ((mntent = getmntent(fp))) {
+		if (strcmp(unraw, mntent->mnt_fsname) == 0) {
+			retval = strdup(mntent->mnt_dir);
+			break;
+		}
+	}
+#else /*__APPLE__*/
     result = getmntinfo(&fsinfo, MNT_NOWAIT);
 
     for (i = 0; i < result; i++) {
@@ -711,7 +740,7 @@ get_mount_point(const char *cdev)
             break;
         }
     }
-
+#endif
 done:
     if (unraw) {
         free(unraw);
@@ -731,11 +760,18 @@ done:
  */
 static void get_write_access( char *dev)
 {
+#if __APPLE__
     int                    i;
     int                    myMountsCount;
+#endif
     void *                myPtr;
     char *                myCharPtr;
+#if __linux__
+    FILE *                fp = fopen("/proc/self/mounts", "r");
+    struct mntent *       mntent;
+#else /*__APPLE__*/
     struct statfs *            myBufPtr;
+#endif
     void *                myNamePtr;
     int                blockDevice_fd = -1;
 
@@ -759,7 +795,10 @@ static void get_write_access( char *dev)
         fsck_set_device_writable(1);
         goto ExitThisRoutine;
     }
-    
+
+#if __linux__
+    //TODO
+#else /*__APPLE__*/
     // get count of mounts then get the info for each
     myMountsCount = getfsstat( NULL, 0, MNT_NOWAIT );
     if ( myMountsCount < 0 )
@@ -784,6 +823,7 @@ static void get_write_access( char *dev)
         }
         myBufPtr++;
     }
+#endif
     fsck_set_device_writable(1);   // single user will get us here, f_mntfromname is not /dev/diskXXXX
     
 ExitThisRoutine:

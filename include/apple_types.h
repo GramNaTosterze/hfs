@@ -3,20 +3,26 @@
 
 #include <errno.h>
 #include <stdint.h>
+#include <bsd/sys/cdefs.h>
 
 typedef	char uuid_string_t[37];
+
+#ifndef BSD
+#define BSD 1
+#endif
+
+#define KAUTH_FILESEC_XATTR "com.apple.system.Security"
 
 #define UF_IMMUTABLE    0x00000002
 #define XATTR_MAXNAMELEN 127
 #define MAXBSIZE		(256 * 4096)
 #define __unused
-#define __printflike(x,y)
 
-#ifndef true
-//#define true			1
+#ifndef TRUE
+#define TRUE			1
 #endif
-#ifndef false
-//#define false			0
+#ifndef FALSE
+#define FALSE			0
 #endif
 
 /* Mac types */

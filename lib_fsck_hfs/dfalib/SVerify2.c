@@ -31,8 +31,9 @@
 */
 
 #include <sys/ioctl.h>
+#ifdef __APPLE__
 #include <sys/disk.h>
-
+#endif
 #include "BTree.h"
 #include "BTreePrivate.h"
 #include "Scavenger.h"

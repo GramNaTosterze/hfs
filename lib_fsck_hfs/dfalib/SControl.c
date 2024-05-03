@@ -29,11 +29,14 @@
 
 	Written by:	Bill Bruffey
 
-	Copyright:	© 1985, 1986, 1992-1999 by Apple Computer, Inc., all rights reserved.
+	Copyright:	ï¿½ 1985, 1986, 1992-1999 by Apple Computer, Inc., all rights reserved.
 */
 
 #define SHOW_ELAPSED_TIMES  0
 
+#if defined(__linux__)
+#include "apple_types.h"
+#endif
 
 #if SHOW_ELAPSED_TIMES
 #include <sys/time.h>
@@ -1538,7 +1541,7 @@ Boolean IsBlueBoxSharedDrive ( DrvQElPtr dqPtr )
 		}	
 		else
 		{
-			//¥¥¥ bek - lock w/o unlock/restore?  should be getstate/setstate?
+			//ï¿½ï¿½ï¿½ bek - lock w/o unlock/restore?  should be getstate/setstate?
 			HLock((Handle)(driverDCtlPtr)->dCtlDriver);
 			drvrHeaderPtr = (DRVRHeaderPtr)*((Handle)(driverDCtlPtr->dCtlDriver));
 			

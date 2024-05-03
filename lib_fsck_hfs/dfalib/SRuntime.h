@@ -25,7 +25,12 @@
 #ifndef __SRUNTIME__
 #define __SRUNTIME__
 
-#if BSD
+#if defined(__linux__)
+#include "os_byte_order.h"
+#include "apple_types.h"
+#endif
+
+#if BSD || defined(__linux__)
 
 #include <sys/types.h>
 #include <stdlib.h>
@@ -43,7 +48,7 @@
 
 #endif
 
-#if BSD
+#if BSD || defined(__linux__)
 /* Classic Mac OS Types */
 typedef int8_t		SInt8;
 typedef int16_t		SInt16;

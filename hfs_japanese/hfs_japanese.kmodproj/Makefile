@@ -3,8 +3,8 @@
 #
 # NOTE: Do NOT change this file -- Project Builder maintains it.
 #
-# Put all of your customizations in files called Makefile.preamble
-# and Makefile.postamble (both optional), and Makefile will include them.
+# Put all of your customizations in files called __Makefile.preamble
+# and __Makefile.postamble (both optional), and __Makefile will include them.
 #
 
 NAME = HFS_Japanese.kmod

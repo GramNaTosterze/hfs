@@ -20,7 +20,9 @@
  * 
  * @APPLE_LICENSE_HEADER_END@
  */
-
+#if defined(__linux__)
+#include "apple_types.h"
+#endif
 #include "SRuntime.h"
 #include "Scavenger.h"
 #include "cache.h"

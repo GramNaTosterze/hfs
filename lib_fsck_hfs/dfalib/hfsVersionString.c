@@ -1,0 +1,1 @@
+const unsigned char fsck_hfsVersionString[] = "@(#)PROGRAM:fsck_hfs  PROJECT:hfs-557~332\n";

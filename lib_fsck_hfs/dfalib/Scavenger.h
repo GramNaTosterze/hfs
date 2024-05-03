@@ -40,12 +40,17 @@
 
 #include <assert.h>
 #include <sys/xattr.h>
+#if defined(__linux__)
+#include <sys/errno.h>
+#include <sys/param.h>
+#elif defined(__APPLE__)
 #include <sys/acl.h>
 #include <sys/kauth.h>
 #include <sys/errno.h>
 #include <sys/syslimits.h>
 #include <sys/param.h>
 #include <sys/sysctl.h>
+#endif
 #include <sys/mount.h>
 #include <hfs/hfs_mount.h>
 
@@ -79,7 +84,7 @@ enum {
 
 #define	kBusErrorValue	0x50FF8001
 
-//¥¥ Danger! This should not be hard coded
+//ï¿½ï¿½ Danger! This should not be hard coded
 #define	kMaxClumpSize	0x100000	/* max clump size is 1MB (2048 btree nodes) */
 
 #define	MDB_FNum	1				/* file number representing the MDB */

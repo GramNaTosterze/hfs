@@ -10,12 +10,15 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#if defined(__APPLE__)
 #include <sys/disk.h>
+#endif
 #include <sys/stat.h>
 #include <sys/mount.h>
 #include <sys/ioctl.h>
+#if defined(__APPLE__)
 #include <sys/sysctl.h>
-
+#endif
 #include "cache.h"
 #include "lib_fsck_hfs.h"
 
@@ -89,8 +92,8 @@ typedef struct fsck_state {
 } fsck_state_t;
 
 
-fsck_state_t state;
-lib_fsck_ctx_t ctx;
+extern fsck_state_t state;
+extern lib_fsck_ctx_t ctx;
 
 
 void fsck_print(lib_fsck_ctx_t c, LogMessageType type, const char *fmt, ...);

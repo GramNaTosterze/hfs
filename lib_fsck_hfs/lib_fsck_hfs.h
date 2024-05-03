@@ -7,7 +7,11 @@
 #ifndef lib_fsck_hfs_h
 #define lib_fsck_hfs_h
 
+#if __linux__
+#include "apple_types.h"
+#else /*__APPLE__*/
 #import <os/log.h>
+#endif
 
 #include "dfalib/CheckHFS.h"
 #include "fsck_hfs_msgnums.h"

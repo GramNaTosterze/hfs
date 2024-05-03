@@ -27,7 +27,7 @@
 
 	Version:	xxx put version here xxx
 
-	Copyright:	© 1997-1999 by Apple Computer, Inc., all rights reserved.
+	Copyright:	ï¿½ 1997-1999 by Apple Computer, Inc., all rights reserved.
 
 */
 
@@ -40,7 +40,12 @@
 #include <fcntl.h>
 #include <limits.h>
 
+#if defined(__linux__)
+#include "os_byte_order.h"
+#include <bsd/string.h>
+#else /* __APPLE__ */
 #include <libkern/OSByteOrder.h>
+#endif /* __linux__ */
 #define SW16(x)	OSSwapBigToHostInt16(x)
 #define	SW32(x)	OSSwapBigToHostInt32(x)
 #define	SW64(x)	OSSwapBigToHostInt64(x)
@@ -794,7 +799,7 @@ OSErr IVChk( SGlobPtr GPtr )
 		// Calculate the volume bitmap size
 		bitMapSizeInSectors = ( numABlks + kBitsPerSector - 1 ) / kBitsPerSector;			//	VBM size in blocks
 
-		//¥¥	Calculate the validaty of HFS Allocation blocks, I think realTotalBlocks == numABlks
+		//ï¿½ï¿½	Calculate the validaty of HFS Allocation blocks, I think realTotalBlocks == numABlks
 		numABlks = (UInt32)((totalSectors - 3 - bitMapSizeInSectors) / (realAllocationBlockSize / Blk_Size));	//	actual # of alloc blks
 
 		if ( realTotalBlocks > numABlks ) {
@@ -1325,7 +1330,7 @@ OSErr BadBlockFileExtentCheck( SGlobPtr GPtr )
 	p = (void *) block.buffer;
 	attributes = isHFSPlus == true ? ((HFSPlusVolumeHeader*)p)->attributes : ((HFSMasterDirectoryBlock*)p)->drAtrb;
 
-	//¥¥ Does HFS+ honnor the same mask?
+	//ï¿½ï¿½ Does HFS+ honnor the same mask?
 	if ( attributes & kHFSVolumeSparedBlocksMask )				//	if any badspots
 	{
 		HFSPlusExtentRecord		zeroXdr;						//	dummy passed to 'CheckFileExtents'
@@ -1709,7 +1714,7 @@ OSErr CatHChk( SGlobPtr GPtr )
 	//	position to the beginning of catalog
 	//
 	
-	//¥¥ Can we ignore this part by just taking advantage of setting the selCode = 0x8001;
+	//ï¿½ï¿½ Can we ignore this part by just taking advantage of setting the selCode = 0x8001;
 	{ 
 		BuildCatalogKey( 1, (const CatalogName *)nil, isHFSPlus, &key );
 		result = SearchBTreeRecord( GPtr->calculatedCatalogFCB, &key, kNoHint, &foundKey, &threadRecord, &recSize, &hint );
@@ -3091,7 +3096,7 @@ OSErr VInfoChk( SGlobPtr GPtr )
 	isHFSPlus = VolumeObjectIsHFSPlus( );
 	myVOPtr = GetVolumeObjectPtr( );
 	
-	// locate the catalog record for the root directoryÉ
+	// locate the catalog record for the root directoryï¿½
 	result = GetBTreeRecord( GPtr->calculatedCatalogFCB, 0x8001, &foundKey, &record, &recSize, &hint );
 	GPtr->TarID = kHFSCatalogFileID;							/* target = catalog */
 	GPtr->TarBlock = hint;										/* target block = returned hint */
@@ -3233,7 +3238,7 @@ OSErr VInfoChk( SGlobPtr GPtr )
 		if ( (volumeHeader->nextCatalogID > vcb->vcbNextCatalogID) ) 
 			vcb->vcbNextCatalogID = volumeHeader->nextCatalogID;
 			
-		//¥¥TBD location and unicode? volumename
+		//ï¿½ï¿½TBD location and unicode? volumename
 		//	verify the volume name
 		result = ChkCName( GPtr, (const CatalogName*) &foundKey.hfsPlus.nodeName, isHFSPlus );
 
@@ -4477,6 +4482,9 @@ static int CompareExtentFileID(const void *first, const void *second)
 //int journal_replay(SGlobPtr gptr)
 int journal_replay(const char *block_device)
 {
+#ifdef __linux__
+    return 0; /* No journal support */
+#else /* __APPLE__ */
 	int retval = 0;
 	struct vfsconf vfc;
 	int mib[4];
@@ -4506,5 +4514,6 @@ int journal_replay(const char *block_device)
 
 out:
 	return retval;
+#endif
 }
  

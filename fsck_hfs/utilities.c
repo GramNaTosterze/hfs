@@ -56,7 +56,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/errno.h>
+#if __linux__
+#include <limits.h>
+#include <signal.h>
+#else /*__APPLE__*/
 #include <sys/syslimits.h>
+#endif
 #include <pwd.h>
 
 #include <ctype.h>
@@ -65,7 +70,9 @@
 #include <string.h>
 #include <unistd.h> 
 #include <stdlib.h>
+#if __APPLE__
 #include <sys/sysctl.h>
+#endif
 #include <fcntl.h>
 
 #include "fsck_hfs.h"

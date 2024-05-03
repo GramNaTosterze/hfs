@@ -29,15 +29,19 @@
 #include <errno.h>
 #include <sys/ioctl.h>
 
+#if defined(__linux__)
+#include <fcntl.h>
+#include <sys/stat.h>
+#else
 #include <IOKit/storage/IOMediaBSDClient.h>
-
+#endif /* __linux__ */
 #else
 
 #include <Files.h>
 #include <Device.h>
 #include <Disks.h>
 
-#endif
+#endif /* BSD */
 
 
 OSErr GetDeviceSize(int driveRefNum, UInt64 *numBlocks, UInt32 *blockSize)

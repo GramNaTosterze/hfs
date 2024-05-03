@@ -10,16 +10,23 @@ tools to handle hfs partitions
 
 ### Debian
 1. libbsd-dev
+2. uuid-dev
+3. libblocksruntime-dev
+
+#### instalation
+```bash
+$ sudo apt install libbsd-dev uuid-dev
+```
 
 ### ArchLinux
 
 
 ## Compilation
-```console
-	$ mkdir build
-	$ cd build
-	$ cmake ..
-	$ make [newfs_hfs]
+```bash
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make [newfs_hfs]
 ```
 
 ## Usage

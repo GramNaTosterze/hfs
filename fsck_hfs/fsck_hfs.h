@@ -38,7 +38,11 @@ void 		llog(const char *fmt, ...) __printflike(1, 2);          // write to log f
 void 		olog(const char *fmt, ...) __printflike(1, 2);          // write to standard out
 void        plog(const char *fmt, ...) __printflike(1, 2);          // printf replacement that writes to both log file and standard out
 void        vplog(const char *fmt, va_list ap) __printflike(1, 0);  // vprintf replacement that writes to both log file and standard out
+#if __linux__
+void        fplog(FILE *stream, const char *fmt, va_list ap);    // fprintf replacement that writes to both log file and standard out
+#else
 void        fplog(FILE *stream, const char *fmt, va_list ap) __printflike(2, 3);    // fprintf replacement that writes to both log file and standard out
+#endif
 #define printf  plog      // just in case someone tries to use printf/fprint
 #define fprintf fplog
 
