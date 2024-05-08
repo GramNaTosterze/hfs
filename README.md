@@ -3,37 +3,61 @@ tools to handle hfs partitions
 
 ## Ported tools
 1. newfs_hfs
+2. fsck_hfs
+
 
 ## Dependencies
 ### MacOS
 1. [XNU headers]
+2. [CTF tools]
+3. [AvailabilityVersions]
+4. [libfirehose]
+
+### install dependencies
+[OSX_DEPS]
 
 ### Debian
 1. libbsd-dev
 2. uuid-dev
 3. libblocksruntime-dev
 
-#### instalation
+#### install dependencies
 ```bash
-$ sudo apt install libbsd-dev uuid-dev
+$ apt install libbsd-dev uuid-dev libblocksruntime-dev
 ```
 
 ### ArchLinux
+1. libbsd
+2. libdispatch
 
+#### install dependencies
+```bash
+$ pacman -S libdispatch libbsd
+```
 
 ## Compilation
 ```bash
 $ mkdir build
 $ cd build
 $ cmake ..
-$ make [newfs_hfs]
+$ make install
 ```
 
 ## Usage
-TODO
+```bash
+$ newfs_hfs [-N [partition-size]] [hfsplus-options] special-device
+```
 
+```bash
+$ fsck_hfs [-b [size] B [path] c [size] e [mode] ESdfglx m [mode] npqruy] special-device
+```
 
 [XNU headers]: https://github.com/apple-oss-distributions/xnu
+[CTF tools]: https://github.com/apple-oss-distributions/dtrace
+[AvailabilityVersions]: https://github.com/apple-oss-distributions/AvailabilityVersions
+[libfirehose]: https://github.com/apple-oss-distributions/libdispatch
+[OSX_DEPS]: OSX_DEPS.md
+
 
 # Original Readme
 

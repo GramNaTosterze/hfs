@@ -30,6 +30,9 @@
 #include <assert.h>
 #include <Block.h>
 #include <sys/param.h>
+#if __linux__
+#include <bsd/stdio.h>
+#endif
 
 #include "fsck_messages.h"
 #include "fsck_keys.h"

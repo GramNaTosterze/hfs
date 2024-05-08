@@ -26,6 +26,7 @@
 #if __APPLE__
 #include <sys/ucred.h>
 #endif
+#include <stdarg.h>
 #include <sys/ioctl.h>
 #if __APPLE__
 #include <sys/disk.h>

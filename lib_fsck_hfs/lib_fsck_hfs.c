@@ -4,6 +4,7 @@
 //  Created by Adam Hijaze on 02/11/2022.
 //
 
+#include <stdarg.h>
 #include "check.h"
 #include "lib_fsck_hfs.h"
 
