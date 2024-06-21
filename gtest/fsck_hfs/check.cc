@@ -5,7 +5,10 @@ TEST(fsck_hfs, Check) {
     LoSetup();
     MountTestImage();
     
-    std::string cmd = std::format("{} {}", FSCK_HFS, MOUNT_POINT);
+    std::array<char, 256> buff{};
+    snprintf(buff.data(), buff.size(), "%s %s 2>&1", FSCK_HFS, MOUNT_POINT);
+
+    std::string cmd(buff.data());
     ASSERT_EQ(system(cmd.c_str()), 0);
 
     DetachLo();

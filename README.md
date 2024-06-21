@@ -34,7 +34,7 @@ $ yay -S HFSUtils-git
 
 #### install dependencies
 ```bash
-$ apt install libbsd-dev uuid-dev libblocksruntime-dev
+$ apt install libbsd-dev uuid-dev libblocksruntime-dev libssl-dev
 ```
 
 ### ArchLinux

@@ -1,6 +1,10 @@
 #ifndef HFSUTILS_DISK_IMAGE_H
 #define HFSUTILS_DISK_IMAGE_H
 
+#include <memory>
+#include <stdexcept>
+#include <string>
+
 #ifndef TEST_IMAGE // should be set by cmake
 #define TEST_IMAGE "./test-image.img"
 #endif

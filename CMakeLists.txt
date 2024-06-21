@@ -3,7 +3,7 @@ project(HFSUtils)
 
 enable_testing()
 
-set(CMAKE_CXX_STANDARD 26)
+set(CMAKE_CXX_STANDARD 20)
 include_directories(include)
 add_compile_options(-fblocks)
 

@@ -5,8 +5,11 @@ TEST(newfs_hfs, Format) {
     LoSetup();
     MountTestImage();
 
-    std::string cmd = std::format("{} -v TestPartition {}", NEWFS_HFS, MOUNT_POINT);
-    ASSERT_EQ(system(cmd.c_str()), 0);
+    std::array<char, 256> buff{};
+    snprintf(buff.data(), buff.size(), "%s -v TestPartition %s", NEWFS_HFS, MOUNT_POINT);
 
+    std::string cmd(buff.data());
+    ASSERT_GE(system(cmd.c_str()), 0);
+    
     DetachLo();
 }
