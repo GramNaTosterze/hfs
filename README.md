@@ -5,6 +5,17 @@ tools to handle hfs partitions
 1. newfs_hfs
 2. fsck_hfs
 
+## Instalation
+### Deb-based(using PPA)
+```bash
+
+```
+
+
+### Arch-based(using AUR)
+```bash
+$ yay -S HFSUtils-git
+```
 
 ## Dependencies
 ### MacOS
@@ -42,7 +53,7 @@ $ pacman -S libdispatch libbsd
 ```bash
 $ mkdir build
 $ cd build
-$ cmake ..
+$ cmake .. -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++
 $ make install
 ```
 

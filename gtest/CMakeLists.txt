@@ -11,6 +11,9 @@ set(SOURCES
 add_executable(hfs-tests ${SOURCES})
 add_dependencies(hfs-tests newfs_hfs fsck_hfs)
 target_link_libraries(hfs-tests gtest)
+target_compile_options(hfs-tests 
+        PUBLIC -fexperimental-library
+        )
 
 target_compile_definitions(hfs-tests
         PUBLIC TEST_IMAGE="${CMAKE_BINARY_DIR}/test-image.img"
