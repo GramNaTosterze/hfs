@@ -8,5 +8,6 @@ if(APPLE)
     target_link_libraries(${TARGET}  util)
 elseif(UNIX)
     target_link_libraries(${TARGET} bsd)
+    set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "mkfs.hfs")
 endif()
 

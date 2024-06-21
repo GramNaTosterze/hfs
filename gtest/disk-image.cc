@@ -1,6 +1,5 @@
 #include <cstdio>
 #include <gtest/gtest.h>
-#include <memory>
 #include <sys/mount.h>
 
 #include "disk-image.h"

@@ -14,7 +14,7 @@ target_link_libraries(hfs-tests gtest)
 
 target_compile_definitions(hfs-tests
         PUBLIC TEST_IMAGE="${CMAKE_BINARY_DIR}/test-image.img"
-        NEWFS_HFS="${CMAKE_SOURCE_DIR}/bin/newfs_hfs" FSCK_HFS="${CMAKE_SOURCE_DIR}/bin/fsck_hfs"
+        NEWFS_HFS="${CMAKE_SOURCE_DIR}/bin/mkfs.hfs" FSCK_HFS="${CMAKE_SOURCE_DIR}/bin/fsck.hfs"
         )
 
 gtest_add_tests(
