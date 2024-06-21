@@ -35,6 +35,9 @@ $ apt install libbsd-dev uuid-dev libblocksruntime-dev
 $ pacman -S libdispatch libbsd
 ```
 
+## Tests 
+1. gtest
+
 ## Compilation
 ```bash
 $ mkdir build

@@ -6,6 +6,10 @@
 //
 //
 
+#if __linux__
+#include <wait.h>
+#include <stdbool.h>
+#endif
 #include <stdarg.h>
 #include <libgen.h>
 #include <spawn.h>

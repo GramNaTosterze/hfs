@@ -4,6 +4,9 @@
 #include <sys/stat.h>
 #include <sys/ioctl.h>
 #include <libgen.h>
+#if __linux__
+#include "apple_types.h"
+#endif
 
 #include "hfs-tests.h"
 #include "test-utils.h"
@@ -53,8 +56,11 @@ int run_access(__unused test_ctx_t *ctx)
 
 	char *base_path = strdup(path);
 	base_path = dirname(base_path);
+#if __linux__
+    //assert_no_err(fcntl(fd, HFSIOC_EXT_BULKACCESS, &params));
+#else /*__APPLE__*/
 	assert_no_err(fsctl(base_path, HFSIOC_EXT_BULKACCESS, &params, 0));
-
+#endif
 	if (access_vector[0] != ENOENT)
 		assert_fail("access_vector[0] != ENOENT (== %u)!", access_vector[0]);
 	

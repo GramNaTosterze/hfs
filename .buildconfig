@@ -1,0 +1,16 @@
+[default-4]
+name=Default (kopia)
+runtime=podman:d8e3b7d49277ca71dd0ba7bee7d40e70e64fa35501c9b05d1e8e2d35416f5158
+toolchain=default
+config-opts=
+run-opts=
+prefix=/home/krzysiu/.var/app/org.gnome.Builder/cache/gnome-builder/install/hfs/podman-d8e3b7d49277ca71dd0ba7bee7d40e70e64fa35501c9b05d1e8e2d35416f5158
+app-id=
+postbuild=
+prebuild=
+run-command=
+default=true
+
+[default-4.environment]
+CC=/usr/bin/clang
+CXX=/usr/bin/clang++

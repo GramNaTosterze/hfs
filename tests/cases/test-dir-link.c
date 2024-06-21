@@ -1,4 +1,8 @@
+#if __linux__
+#include "apple_types.h"
+#else /*__APPLE__*/
 #include <TargetConditionals.h>
+#endif
 
 #if !TARGET_OS_IPHONE
 

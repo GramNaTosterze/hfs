@@ -17,7 +17,9 @@
 #include <sysexits.h>
 #include <stdlib.h>
 #include <iostream>
+#if __APPLE__
 #include <mach-o/dyld.h>
+#endif
 #include <sys/param.h>
 
 #include "hfs-tests.h"
@@ -26,6 +28,10 @@
 #include "systemx.h"
 
 #define INSTALL_PATH	"/AppleInternal/CoreOS/tests/hfs/hfs-tests"
+
+#if __linux__
+#define atexit_b(x) atexit(reinterpret_cast<void (*)(void)>(x))
+#endif
 
 typedef std::unordered_map<std::string, test_t *> tests_t;
 static tests_t *tests;
@@ -138,8 +144,12 @@ int main(int argc, char *argv[])
 		
 		char progname[MAXPATHLEN];
 		uint32_t sz = MAXPATHLEN;
+#if __linux__
+        //TODO
+#else /*__APPLE__*/
 		assert(!_NSGetExecutablePath(progname, &sz));
-		
+#endif
+
 		argc -= optind;
 		argv += optind;
 
@@ -158,8 +168,12 @@ int main(int argc, char *argv[])
 					 @"Command": @[ @INSTALL_PATH, @"--test",
 								   @(it->first.c_str()), @"run"]
 												 } mutableCopy];
-					
+
+#if __linux__
+                    [test_case setValue:(id)true forKey:@"AsRoot"];
+#else /*__APPLE__*/
 					test_case[@"AsRoot"] = (id)kCFBooleanTrue;
+#endif
 
 					[cases addObject:test_case];
 				}

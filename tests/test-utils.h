@@ -29,10 +29,14 @@
 #ifndef TEST_UTILS_H_
 #define TEST_UTILS_H_
 
+#if __APPLE__
 #include <mach-o/dyld.h>
+#endif
 #include <stdarg.h>
 #include <stdio.h>
+#if __APPLE__
 #include <sys/syslimits.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <sys/errno.h>

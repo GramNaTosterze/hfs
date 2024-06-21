@@ -568,7 +568,8 @@ read_disk_info() {
     } else {
         fsck_set_dev_block_size(devBlockSize);
     }
-    
+
+#if __APPLE__
     // Get device block count
     if (ioctl(fd, DKIOCGETBLOCKCOUNT, &devBlockCount) < 0) {
         fsck_print(LOG_TYPE_INFO, "Can't get device block count (%s)\n", strerror(errno));
@@ -576,6 +577,7 @@ read_disk_info() {
     } else {
         fsck_set_dev_block_count(devBlockCount);
     }
+#endif
     
     
     return 0;
@@ -675,6 +677,7 @@ retry:
         if (stslash.st_dev == stblock.st_rdev) {
             fsck_set_hotroot(1);
         }
+#if __APPLE__
         raw = rawname(newname);
         if (stat(raw, &stchar) < 0) {
             fsck_print(LOG_TYPE_ERROR, raw);
@@ -687,6 +690,7 @@ retry:
             fsck_print(LOG_TYPE_INFO, "%s is not a character device\n", raw);
             return origname;
         }
+#endif
     } else if ((stblock.st_mode & S_IFMT) == S_IFCHR && !retried) {
         newname = unrawname(newname);
         retried++;

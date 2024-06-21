@@ -1,0 +1,11 @@
+Source: hfsutils
+Section: devel
+Priority: optional
+Maintainer: Krzysztof Napiórkowski <KrzysiuN@proton.me>
+Build-Depends: cmake, build-essential
+Homepage: https://github.com/GramNaTosterze/hfs
+
+Package: hfsutils
+Architecture: any
+Depends:
+Description: HFS tools ported from macos

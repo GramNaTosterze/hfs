@@ -390,11 +390,15 @@ main(argc, argv)
 		}
 #endif
 	}
-
+#if __linux__
+    if (hfs_newfs(blkdevice) < 0) {
+        err(1, "cannot create filesystem on %s", blkdevice);
+    }
+#else /*__APPLE__*/
 	if (hfs_newfs(rawdevice) < 0) {
 		err(1, "cannot create filesystem on %s", rawdevice);
 	}
-
+#endif
 	exit(0);
 }
 

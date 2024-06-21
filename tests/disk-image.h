@@ -10,7 +10,9 @@
 #define disk_image_h_
 
 #include <stdbool.h>
+#if __APPLE__
 #include <TargetConditionals.h>
+#endif
 
 /*
  * One 'shared' disk image is created for any test to use, if it wants.

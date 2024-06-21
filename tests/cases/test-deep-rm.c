@@ -1,6 +1,10 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <spawn.h>
+#if __linux__
+#include <sys/wait.h>
+#include "apple_types.h"
+#endif
 
 #include "hfs-tests.h"
 #include "test-utils.h"

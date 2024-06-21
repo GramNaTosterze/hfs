@@ -17,7 +17,12 @@
 #include <stdbool.h>
 
 #include <Foundation/Foundation.h>
+#if __linux__
+#include <wait.h>
+#include <sys/statfs.h>
+#else /*__APPLE__*/
 #include <TargetConditionals.h>
+#endif
 
 #include "disk-image.h"
 #include "test-utils.h"
@@ -447,7 +452,22 @@ disk_image_t *disk_image_create(const char *path, disk_image_opts_t *opts)
 														options:0
 														 format:NULL
 														  error:NULL];
-		
+#if __linux__
+        for (NSDictionary *entity in [[results objectForKey:@"system-entities"] retain]) {
+            if (opts && opts->partition_type) {
+                if (!strcmp([[[results objectForKey:@"unmapped-content-hint"] retain] UTF8String],
+                            opts->partition_type)
+                    || !strcmp([[[results objectForKey:@"content-hint"] retain] UTF8String],
+                               opts->partition_type)) {
+                    di->disk = strdup([[[results objectForKey:@"dev-entry"] retain] fileSystemRepresentation]);
+                    break;
+                }
+            } else if ([[[results objectForKey:@"content-hint"] retain] isEqualToString:@"Apple_HFS"]) {
+                di->mount_point = strdup([[[results objectForKey:@"mount-point"] retain] fileSystemRepresentation]);
+                di->disk = strdup([[[results objectForKey:@"dev-entry"] retain] fileSystemRepresentation]);
+                break;
+            }
+#else /*__APPLE__*/
 		for (NSDictionary *entity in results[@"system-entities"]) {
 			if (opts && opts->partition_type) {
 				if (!strcmp([entity[@"unmapped-content-hint"] UTF8String],
@@ -462,13 +482,15 @@ disk_image_t *disk_image_create(const char *path, disk_image_opts_t *opts)
 				di->disk = strdup([entity[@"dev-entry"] fileSystemRepresentation]);
 				break;
 			}
+#endif
+
 		}
 	}
 
 	int status;
 	assert_with_errno(ignore_eintr(waitpid(pid, &status, 0), -1) == pid);
 	assert(WIFEXITED(status) && !WEXITSTATUS(status));
-	
+
 	assert(di->disk);
 
 	if (strcmp(path, SHARED_PATH)) { // Don't register a cleanup for the shared image
@@ -484,17 +506,21 @@ disk_image_t *disk_image_get(void)
 {
 	disk_image_t *di;
 	struct statfs sfs;
-	
+
 	if (statfs(SHARED_MOUNT, &sfs) == 0) {
 		di = calloc(1, sizeof(*di));
-		
+
 		di->mount_point = SHARED_MOUNT;
+#if __APPLE__
 		di->disk = strdup(sfs.f_mntfromname);
+#endif
 		di->path = SHARED_PATH;
 
 		// Make sure the di struct is freed when tests are complete.
 		test_cleanup(^ bool {
+#if __APPLE__
 			free(di->disk);
+#endif
 			free(di);
 			return true;
 		});

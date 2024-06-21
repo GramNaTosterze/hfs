@@ -5,8 +5,9 @@
 //  Created by Chris Suter on 8/11/15.
 //
 //
-
+#if __APPLE__
 #include <TargetConditionals.h>
+#endif
 
 #if !TARGET_OS_IPHONE
 
@@ -16,6 +17,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#if __linux__
+#include <sys/statfs.h>
+#endif
 
 #include "hfs-tests.h"
 #include "disk-image.h"
@@ -48,7 +52,11 @@ int run_external_jnl(__unused test_ctx_t *ctx)
 								.size = 64 * 1024 * 1024
 							});
 
+#if __linux__
+    umount(di_host->mount_point);
+#else
 	unmount(di_host->mount_point, 0);
+#endif
 
 	assert(!systemx("/sbin/newfs_hfs", SYSTEMX_QUIET, "-J", "-D", di_ext->disk, di_host->disk, NULL));
 
@@ -58,6 +66,9 @@ int run_external_jnl(__unused test_ctx_t *ctx)
 	di_host->mount_point = NULL;
 
 	struct statfs *mntbuf;
+#if __linux__
+//TODO
+#else
 	int i, n = getmntinfo(&mntbuf, 0);
 	for (i = 0; i < n; ++i) {
 		if (!strcmp(mntbuf[i].f_mntfromname, di_host->disk)) {
@@ -67,6 +78,7 @@ int run_external_jnl(__unused test_ctx_t *ctx)
 	}
 
 	assert(i < n);
+#endif
 
 	char *path;
 	asprintf(&path, "%s/test", di_host->mount_point);
