@@ -29,7 +29,7 @@ jobs:
     - name: Build fsck_hfs
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target fsck_hfs
 
-    #- name: Test
-    #  working-directory: ${{github.workspace}}/build
-    #  run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target hfs-tests && ctest -C ${{env.BUILD_TYPE}}
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target hfs-tests && ctest -C ${{env.BUILD_TYPE}}
 

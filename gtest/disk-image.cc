@@ -4,31 +4,32 @@
 
 #include "disk-image.h"
 
-void GenerateTestImage() {
+int GenerateTestImage() {
     std::array<char, 256> buff{};
     snprintf(buff.data(), buff.size(), "dd if=/dev/urandom of=%s bs=1M count=1024", TEST_IMAGE);
 
     std::string cmd(buff.data());
-    ASSERT_EQ(system(cmd.c_str()), 0);
+    return system(cmd.c_str());
 }
 
-void LoSetup() {
+int LoSetup() {
     std::array<char, 256> buff{};
     snprintf(buff.data(), buff.size(), "losetup %s %s", MOUNT_POINT, TEST_IMAGE);
 
     std::string cmd(buff.data());
-    ASSERT_EQ(system(cmd.c_str()), 0);
+    return system(cmd.c_str());
 }
 
-void MountTestImage() {
+int MountTestImage() {
     //mount();
+    return 0;
 }
 
-void DetachLo() {
+int DetachLo() {
     std::array<char, 256> buff{};
     snprintf(buff.data(), buff.size(), "losetup -d %s", MOUNT_POINT);
 
     std::string cmd(buff.data());
-    ASSERT_EQ(system(cmd.c_str()), 0);
+    return system(cmd.c_str());
 }
 

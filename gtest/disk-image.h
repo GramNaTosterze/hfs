@@ -13,9 +13,9 @@
 #define MOUNT_POINT "/dev/loop0"
 #endif
 
-void GenerateTestImage();
-void LoSetup();
-void MountTestImage();
-void DetachLo();
+int GenerateTestImage();
+int LoSetup();
+int MountTestImage();
+int DetachLo();
 
 #endif //HFSUTILS_DISK_IMAGE_H
