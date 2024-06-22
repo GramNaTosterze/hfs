@@ -8,7 +8,9 @@ tools to handle hfs partitions
 ## Instalation
 ### Deb-based(using PPA)
 ```bash
-
+$ add-apt-repository ppa:toster-na-2-kromki/hfsutils
+$ apt-get update
+$ apt-get install hfsutils
 ```
 
 

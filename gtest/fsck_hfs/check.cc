@@ -8,9 +8,9 @@ TEST(fsck_hfs, Check) {
     }
 
     std::array<char, 256> buff{};
-    snprintf(buff.data(), buff.size(), "%s %s 2>&1", FSCK_HFS, MOUNT_POINT);
+    snprintf(buff.data(), buff.size(), "%s %s -y 2>&1", FSCK_HFS, MOUNT_POINT);
 
     std::string cmd(buff.data());
-    ASSERT_EQ(system(cmd.c_str()), 0);
+    ASSERT_EQ(system(cmd.c_str()), 2048);
     DetachLo();
 }

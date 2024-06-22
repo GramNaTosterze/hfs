@@ -4,7 +4,7 @@
 
 TEST(fsck_hfs, NoDevice) {
     std::array<char, 256> buff{};
-    snprintf(buff.data(), buff.size(), "%s %s_no_dev 2>&1", FSCK_HFS, MOUNT_POINT);
+    snprintf(buff.data(), buff.size(), "%s %s_no_dev -y 2>&1", FSCK_HFS, MOUNT_POINT);
 
     std::string cmd(buff.data());
     std::array<char, 128> buffer{};
