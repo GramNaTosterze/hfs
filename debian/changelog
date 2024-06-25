@@ -1,5 +1,5 @@
-hfsutils (0.1-2ppa0) focal; urgency=low
+hfsutils (650.0.2-13ppa0) jammy; urgency=low
 
- * Initial upload!
+ * symlinx using linux naming conventions
 
- -- Krzysztof Napiórkowski <KrzysiuN@proton.me> Fri, 21 Jun 2024 14:39:04 +0200
+ -- Krzysztof Napiórkowski <KrzysiuN@proton.me> Fri, 22 Jun 2024 14:39:04 +0200

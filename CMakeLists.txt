@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.16)
 project(HFSUtils)
 
 enable_testing()
@@ -21,3 +21,8 @@ set_target_properties( newfs_hfs fsck_hfs dfa
 
 install(TARGETS newfs_hfs COMPONENT newfs_hfs)
 install(TARGETS fsck_hfs COMPONENT fsck_hfs)
+
+if(NOT APPLE AND UNIX) # symlinks using linux naming convention (tool.file_system)
+        install(CODE "file(CREATE_LINK ${CMAKE_INSTALL_PREFIX}/bin/newfs_hfs ${CMAKE_INSTALL_PREFIX}/bin/mkfs.hfs SYMBOLIC)")
+        install(CODE "file(CREATE_LINK ${CMAKE_INSTALL_PREFIX}/bin/fsck_hfs ${CMAKE_INSTALL_PREFIX}/bin/fsck.hfs SYMBOLIC)")
+endif()

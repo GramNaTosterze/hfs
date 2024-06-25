@@ -9,5 +9,4 @@ if(APPLE)
     #TODO
 elseif(UNIX)
     target_link_libraries(${TARGET} dfa BlocksRuntime bsd pthread)
-    set_target_properties(${TARGET} PROPERTIES OUTPUT_NAME "fsck.hfs")
 endif()

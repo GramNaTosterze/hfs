@@ -5,9 +5,8 @@ BUILDDIR = build_dir
 # secondly called by launchpad
 build:
 	mkdir $(BUILDDIR);
-	cd $(BUILDDIR);
-	cmake .. -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr #-DCPACK_COMPONENTS_ALL="newfs_hfs" -DCPACK_PACKAGE_NAME=newfs_hfs -DCPACK_PACKAGE_DESCRIPTION_SUMMARY="Simple Tools to format partinion using HFS"
-	cmake --build . --target newfs_hfs --target fsck_hfs
+	cd $(BUILDDIR); cmake .. -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr
+	cmake --build $(BUILDDIR) --target newfs_hfs --target fsck_hfs
 
 # thirdly called by launchpad
 binary: binary-indep binary-arch
@@ -23,6 +22,8 @@ binary-arch:
 
 # firstly called by launchpad
 clean:
+	rm -rf bin
+	rm -rf lib
 	rm -f build
 	rm -rf $(BUILDDIR)
 

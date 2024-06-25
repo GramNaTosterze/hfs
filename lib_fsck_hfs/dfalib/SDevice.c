@@ -49,7 +49,52 @@ OSErr GetDeviceSize(int driveRefNum, UInt64 *numBlocks, UInt32 *blockSize)
 #if BSD
 	UInt64 devBlockCount = 0;
 	int devBlockSize = 0;
+#if __linux__
+	struct stat stbuf;
 
+	devBlockSize = 512;
+
+#ifndef BLKGETSIZE
+#define BLKGETSIZE              _IO(0x12,96)
+#endif
+#ifndef BLKGETSIZE64
+#define BLKGETSIZE64            _IOR(0x12,114,size_t)
+#endif
+	if (fstat(driveRefNum, &stbuf) < 0){
+		printf("Error: %s\n", strerror(errno));
+		return(-1);
+	}
+        
+        if (S_ISREG(stbuf.st_mode)) {
+                devBlockCount = stbuf.st_size / 512;
+        } 
+        else if (S_ISBLK(stbuf.st_mode)) {
+                unsigned long size;
+                u_int64_t size64;
+                if (!ioctl(driveRefNum, BLKGETSIZE64, &size64))
+                        devBlockCount = size64 / 512;
+                else if (!ioctl(driveRefNum, BLKGETSIZE, &size))
+                        devBlockCount = size;
+                else{
+                        printf("Error: %s\n", strerror(errno));
+			return(-1);
+		}
+			
+        }
+        else{
+                printf("Device is not a block device");
+		return(-1);
+	}
+#elif BSD
+	if (ioctl(driveRefNum, DKIOCGETBLOCKCOUNT, &devBlockCount) < 0) {
+		plog("ioctl(DKIOCGETBLOCKCOUNT) for fd %d: %s\n", driveRefNum, strerror(errno));
+		return (-1);
+	}
+	
+	if (ioctl(driveRefNum, DKIOCGETBLOCKSIZE, &devBlockSize) < 0) {
+		plog("ioctl(DKIOCGETBLOCKSIZE) for fd %d: %s\n", driveRefNum, strerror(errno));
+		return (-1);
+	}
     if (state.blockCount == 0) {
 		if (state.debug) fsck_print(ctx, LOG_TYPE_INFO, "%s: Device block count was not initialized by user\n",state.cdevname);
 		return (-1);
@@ -61,6 +106,8 @@ OSErr GetDeviceSize(int driveRefNum, UInt64 *numBlocks, UInt32 *blockSize)
 		return (-1);
 	}
     devBlockSize = state.devBlockSize;
+
+#endif /*BSD*/
 
 	if (devBlockSize != 512) {
 		*numBlocks = (devBlockCount * (UInt64)devBlockSize) / 512;

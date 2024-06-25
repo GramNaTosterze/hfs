@@ -17,4 +17,4 @@ target_include_directories(${TARGET}
         PUBLIC ${CMAKE_SOURCE_DIR}/lib_fsck_hfs ${CMAKE_SOURCE_DIR}/fsck_hfs
 )
 target_compile_definitions(${TARGET}
-        PUBLIC DEBUG_BUILD=0 XNU_KERNEL_PRIVATE)
+        PUBLIC DEBUG_BUILD=0 XNU_KERNEL_PRIVATE, BSD=1)

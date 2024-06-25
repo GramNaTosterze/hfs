@@ -2,7 +2,7 @@ Source: hfsutils
 Section: devel
 Priority: optional
 Maintainer: Krzysztof Napiórkowski <KrzysiuN@proton.me>
-Build-Depends: cmake, build-essential
+Build-Depends: cmake, clang, build-essential, libbsd-dev, uuid-dev, libblocksruntime-dev, libssl-dev, libgtest-dev
 Homepage: https://github.com/GramNaTosterze/hfs
 
 Package: hfsutils
