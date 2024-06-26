@@ -1310,7 +1310,10 @@ int CacheRawRead (Cache_t *cache, uint64_t off, uint32_t len, void *buf)
 	ssize_t		nread;
 		
 	/* Both offset and length must be multiples of the device block size */
-	if (off % cache->DevBlockSize) return (EINVAL);
+#if __linux__
+    cache->DevBlockSize = cache->BlockSize;
+#endif
+    if (off % cache->DevBlockSize) return (EINVAL);
 	if (len % cache->DevBlockSize) return (EINVAL);
 	
 	/* Seek to the position */

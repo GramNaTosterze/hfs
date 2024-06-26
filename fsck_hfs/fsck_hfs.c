@@ -560,7 +560,43 @@ read_disk_info() {
     int fd = fsck_get_fsreadfd();
     uint64_t devBlockCount = 0;
     uint32_t devBlockSize = 0;
-    
+#if __linux__
+    struct stat stbuf;
+
+    devBlockSize = 512;
+
+#ifndef BLKGETSIZE
+#define BLKGETSIZE              _IO(0x12,96)
+#endif
+#ifndef BLKGETSIZE64
+#define BLKGETSIZE64            _IOR(0x12,114,size_t)
+#endif
+    if (fstat(fd, &stbuf) < 0){
+        printf("Error: %s\n", strerror(errno));
+        return(-1);
+    }
+
+    if (S_ISREG(stbuf.st_mode)) {
+        devBlockCount = stbuf.st_size / 512;
+    }
+    else if (S_ISBLK(stbuf.st_mode)) {
+        unsigned long size;
+        u_int64_t size64;
+        if (!ioctl(fd, BLKGETSIZE64, &size64))
+            devBlockCount = size64 / 512;
+        else if (!ioctl(fd, BLKGETSIZE, &size))
+            devBlockCount = size;
+        else{
+            printf("Error: %s\n", strerror(errno));
+            return(-1);
+        }
+
+    }
+    else{
+        printf("Device is not a block device");
+        return(-1);
+    }
+#elif BSD || __APPLE__
     // Get device block size
     if (ioctl(fd, DKIOCGETBLOCKSIZE, &devBlockSize) < 0) {
         fsck_print(LOG_TYPE_INFO, "Can't get device block size (%s)\n", strerror(errno));
@@ -569,7 +605,6 @@ read_disk_info() {
         fsck_set_dev_block_size(devBlockSize);
     }
 
-#if __APPLE__
     // Get device block count
     if (ioctl(fd, DKIOCGETBLOCKCOUNT, &devBlockCount) < 0) {
         fsck_print(LOG_TYPE_INFO, "Can't get device block count (%s)\n", strerror(errno));

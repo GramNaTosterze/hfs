@@ -6,13 +6,7 @@
 #include "../disk-image.h"
 
 #ifndef FSCK_HFS
-
-#if __linux__
-#define FSCK_HFS "/usr/bin/fsck.hfs" // install directory
-#else
 #define FSCK_HFS "/usr/bin/fsck_hfs" // install directory
-#endif
-
 #endif
 
 #endif //TEST-FSCK_HFS_HH
